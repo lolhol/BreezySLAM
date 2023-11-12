@@ -19,7 +19,7 @@ BASEDIR = ../../../../../../..
 JAVADIR = $(BASEDIR)/java
 CDIR    = $(BASEDIR)/c
 JFLAGS = -Xlint
-JDKINC = -I /usr/lib/jvm/java-7-openjdk-amd64/include
+JDKINC = -I /usr/lib/jvm/java-7-openjdk-amd64/include -I /Library/Java/JavaVirtualMachines/openjdk-8.jdk/Contents/Home/include -I /Library/Java/JavaVirtualMachines/openjdk-8.jdk/Contents/Home/include/darwin
 #JDKINC = -I /opt/jdk1.7.0_67/include -I /opt/jdk1.7.0_67/include/linux
 
 # Set library extension based on OS
@@ -47,9 +47,9 @@ ALL = libjnibreezyslam_components.$(LIBEXT) Laser.class Position.class PoseChang
 
 all: $(ALL)
 
-libjnibreezyslam_components.$(LIBEXT): jnibreezyslam_components.o coreslam.o coreslam_$(ARCH).o
-	gcc -shared -Wl,-soname,libjnibreezyslam_components.so -o libjnibreezyslam_components.so jnibreezyslam_components.o \
-	            coreslam.o coreslam_$(ARCH).o
+libjnibreezyslam_components.$(LIBEXT): jnibreezyslam_components.o coreslam.o random.o ziggurat.o coreslam_$(ARCH).o
+	gcc -shared -o libjnibreezyslam_components.$(LIBEXT) \
+				jnibreezyslam_components.o coreslam.o coreslam_$(ARCH).o random.o ziggurat.o
 
 jnibreezyslam_components.o: jnibreezyslam_components.c Map.h Scan.h ../jni_utils.h
 	gcc $(JDKINC) -fPIC -c jnibreezyslam_components.c
@@ -59,6 +59,12 @@ coreslam.o: $(CDIR)/coreslam.c $(CDIR)/coreslam.h
 
 coreslam_$(ARCH).o: $(CDIR)/coreslam_$(ARCH).c $(CDIR)/coreslam.h
 	gcc -O3 -c -Wall $(CFLAGS) $(SIMD_FLAGS) $(CDIR)/coreslam_$(ARCH).c
+
+random.o: $(CDIR)/random.c
+	gcc -O3 -c -Wall $(CFLAGS) $(CDIR)/random.c
+
+ziggurat.o: $(CDIR)/ziggurat.c
+	gcc -O3 -c -Wall $(CFLAGS) $(CDIR)/ziggurat.c
 
 Map.h: Map.class
 	javah -o Map.h -classpath $(JAVADIR) -jni edu.wlu.cs.levy.breezyslam.components.Map
@@ -86,4 +92,4 @@ Position.class: Position.java
 	javac $(JFLAGS) Position.java
 
 clean:
-		rm -f *.so *.class *.o *.h *~
+	rm -f *.class *.o *.so *.h *.$(LIBEXT) *~

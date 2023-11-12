@@ -409,7 +409,7 @@ float r4_nor ( uint32_t *jsr, uint32_t kn[128], float fn[128], float wn[128] )
   hz = ( int ) shr3_seeded ( jsr );
   iz = ( hz & 127 );
 
-  if ( fabs ( hz ) < kn[iz] )
+  if ( abs ( hz ) < kn[iz] )
   {
     value = ( float ) ( hz ) * wn[iz];
   }
@@ -452,7 +452,7 @@ float r4_nor ( uint32_t *jsr, uint32_t kn[128], float fn[128], float wn[128] )
       hz = ( int ) shr3_seeded ( jsr );
       iz = ( hz & 127 );
 
-      if ( fabs ( hz ) < kn[iz] )
+      if ( abs ( hz ) < kn[iz] )
       {
         value = ( float ) ( hz ) * wn[iz];
         break;

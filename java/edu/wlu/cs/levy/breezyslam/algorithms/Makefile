@@ -19,7 +19,7 @@ BASEDIR = ../../../../../../..
 JAVADIR = $(BASEDIR)/java
 CDIR    = $(BASEDIR)/c
 JFLAGS = -Xlint
-JDKINC = -I /usr/lib/jvm/java-7-openjdk-amd64/include
+JDKINC = -I /usr/lib/jvm/java-7-openjdk-amd64/include -I /Library/Java/JavaVirtualMachines/openjdk-8.jdk/Contents/Home/include -I /Library/Java/JavaVirtualMachines/openjdk-8.jdk/Contents/Home/include/darwin
 #JDKINC = -I /opt/jdk1.7.0_67/include -I /opt/jdk1.7.0_67/include/linux
 
 # Set library extension based on OS
@@ -47,16 +47,14 @@ ALL = libjnibreezyslam_algorithms.$(LIBEXT) CoreSLAM.class SinglePositionSLAM.cl
 all: $(ALL)
 
 libjnibreezyslam_algorithms.$(LIBEXT): jnibreezyslam_algorithms.o coreslam.o random.o ziggurat.o coreslam_$(ARCH).o
-	gcc -shared -Wl,-soname,libjnibreezyslam_algorithms.so -o libjnibreezyslam_algorithms.so jnibreezyslam_algorithms.o \
-	            coreslam.o coreslam_$(ARCH).o random.o ziggurat.o
+	gcc -shared -o libjnibreezyslam_algorithms.$(LIBEXT) \
+	            jnibreezyslam_algorithms.o coreslam.o coreslam_$(ARCH).o random.o ziggurat.o
 
 jnibreezyslam_algorithms.o: jnibreezyslam_algorithms.c RMHCSLAM.h ../jni_utils.h
 	gcc $(JDKINC) -fPIC -c jnibreezyslam_algorithms.c
 
-
 CoreSLAM.class: CoreSLAM.java
 	javac -classpath $(JAVADIR):. CoreSLAM.java
-
 
 SinglePositionSLAM.class: SinglePositionSLAM.java
 	javac -classpath $(JAVADIR):. SinglePositionSLAM.java
@@ -83,8 +81,8 @@ ziggurat.o: $(CDIR)/ziggurat.c
 	gcc -O3 -c -Wall $(CFLAGS) $(CDIR)/ziggurat.c
 	
 clean:
-		rm -f *.class *.o *.h *.$(LIBEXT) *~
+	rm -f *.class *.o *.so *.h *.$(LIBEXT) *~
 
 backup:
-		cp *.java bak
-		cp Makefile bak
+	cp *.java bak
+	cp Makefile bak

@@ -25,6 +25,7 @@ from platform import machine
 
 OPT_FLAGS  = []
 SIMD_FLAGS = []
+ARCH_FLAG = "-m64"
 
 arch = machine()
 
@@ -33,11 +34,9 @@ print(arch)
 if  arch in ['i686', 'x86_64']:
     SIMD_FLAGS = ['-msse3']
     arch = 'i686'
-
 elif arch == 'armv7l':
     OPT_FLAGS = ['-O3']
     SIMD_FLAGS = ['-mfpu=neon']
-
 else:
     arch = 'sisd'
 
@@ -54,7 +53,7 @@ from distutils.core import setup, Extension
 module = Extension('pybreezyslam', 
     sources = SOURCES, 
     extra_compile_args = ['-std=gnu99'] + SIMD_FLAGS + OPT_FLAGS
-    )
+)
 
 
 setup (name = 'BreezySLAM',
@@ -68,4 +67,4 @@ setup (name = 'BreezySLAM',
     license='LGPL',
     platforms='Linux; Windows; OS X',
     long_description = 'Provides core classes Position, Map, Laser, Scan, and algorithm CoreSLAM'
-    )
+)

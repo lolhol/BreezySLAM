@@ -10,8 +10,12 @@ examples/log2pgm
 python/breezyslam/*.pyc
 python/breezyslam/__pycache__
 python/build
+python/BreezySLAM.egg-info
 *.class
 *.o
 *.so
+*.dylib
 *.swp
-
+.vscode/settings.json
+java/BreezySLAM.jar
+.DS_Store
